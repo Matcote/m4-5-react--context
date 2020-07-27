@@ -104,6 +104,17 @@ const Banner = ({ type, message, user }) => {
     </div>
   );
 };
+//------------------BETTER
+const Banner = ({ type, children }) => {
+  const bg = type === "success" ? "green" : "red";
+  return <div style={{ backgroundColor: bg }}>{children}</div>;
+};
+const AuthenticatedBanner = ({ type, message, user }) => {
+  if (!user) {
+    return null;
+  }
+  return <Banner type={type}>Notification from HelloPets.com:{message}</Banner>;
+};
 ```
 
 ---
