@@ -16,10 +16,22 @@ function App(props) {
     setNumCookies,
     calculateCookiesPerSecond,
   } = React.useContext(GameContext);
+  const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
+
+  const secondsAway = Math.floor(
+    (new Date().getTime() - JSON.parse(window.localStorage.getItem("time"))) /
+      1000
+  );
+
+  React.useEffect(() => {
+    setNumCookies(numCookies + numOfGeneratedCookies * secondsAway);
+    // eslint-disable-next-line
+  }, []);
+
   useInterval(() => {
     window.localStorage.setItem("num-cookies", JSON.stringify(numCookies));
     window.localStorage.setItem("items", JSON.stringify(purchasedItems));
-    const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
+    window.localStorage.setItem("time", JSON.stringify(new Date().getTime()));
     setNumCookies(numCookies + numOfGeneratedCookies);
   }, 1000);
 
