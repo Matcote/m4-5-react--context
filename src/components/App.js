@@ -5,29 +5,17 @@ import GlobalStyles from "./GlobalStyles";
 import Home from "./Home";
 import Game from "./Game";
 import useInterval from "../hooks/use-interval.hook";
-import usePersistedState from "../hooks/usePersistedState";
 
+import { GameContext } from "./GameContext";
 import items from "./data";
 
 function App(props) {
-  const [numCookies, setNumCookies] = usePersistedState(1000, "num-cookies");
-  const [purchasedItems, setPurchasedItems] = usePersistedState(
-    {
-      cursor: 0,
-      grandma: 0,
-      farm: 0,
-    },
-    "items"
-  );
-  const calculateCookiesPerSecond = (purchasedItems) => {
-    return Object.keys(purchasedItems).reduce((acc, itemId) => {
-      const numOwned = purchasedItems[itemId];
-      const item = items.find((item) => item.id === itemId);
-      const value = item.value;
-
-      return acc + value * numOwned;
-    }, 0);
-  };
+  const {
+    numCookies,
+    purchasedItems,
+    setNumCookies,
+    calculateCookiesPerSecond,
+  } = React.useContext(GameContext);
   useInterval(() => {
     window.localStorage.setItem("num-cookies", JSON.stringify(numCookies));
     window.localStorage.setItem("items", JSON.stringify(purchasedItems));
@@ -43,14 +31,7 @@ function App(props) {
           <Home />
         </Route>
         <Route path="/game">
-          <Game
-            numCookies={numCookies}
-            setNumCookies={setNumCookies}
-            purchasedItems={purchasedItems}
-            setPurchasedItems={setPurchasedItems}
-            items={items}
-            calculateCookiesPerSecond={calculateCookiesPerSecond}
-          />
+          <Game items={items} />
         </Route>
       </Router>
     </>
